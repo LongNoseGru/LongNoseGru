@@ -1,121 +1,131 @@
-<!DOCTYPE html>
-<html>
-<head>
-   <meta charset="utf-8">
-   <title>Bouncing Box</title>
-   <script src="jquery.min.js"></script>
-   <style>
-       .box {
-		   background-color: red;
-           width: 70px;
-           height: 70px;
-           font-size: 300%;
-           text-align: center;
-           display: block;
-           position: absolute;
-           top: 400px;
-           left: 669px;  /* <--- Change me! */
+/*
+       This Function should check the position of a circle that is passed to the
+       Function. If that circle drifts off the screen, this Function should move
+       it to the opposite side of the screen.
+       */
+       game.checkCirclePosition = function(circle) {
+ 
+           // if the circle has gone past the RIGHT side of the screen then place it on the LEFT
+           if ( circle.x > canvas.width ) {
+               circle.x = 0;
+              
+           }
+          
+           // TODO 7 : YOUR CODE STARTS HERE //////////////////////
+           if ( circle.x < 0 ) {
+               circle.x = canvas.width;
+           }
+ 
+           if ( circle.y < 0 ) {
+               circle.y = canvas.height;
+           }
+ 
+           if ( circle.y > canvas.height) {
+               circle.y = 0;
+           }
+      
+ 
+var init = function (window) {
+   'use strict';
+   var
+       draw = window.opspark.draw,
+       physikz = window.opspark.racket.physikz,
+      
+       app = window.opspark.makeApp(),
+       canvas = app.canvas,
+       view = app.view,
+       fps = draw.fps('#000');
+      
+  
+   window.opspark.makeGame = function() {
+      
+       window.opspark.game = {};
+       var game = window.opspark.game;
+      
+       ////////////////////////////////////////////////////////////
+       ///////////////// PROGRAM SETUP ////////////////////////////
+       ////////////////////////////////////////////////////////////
+      
+       // TODO 1 : Declare and initialize our variables
+       var circle;
+       var circles = [];
+      
+       // TODO 2 : Create a function that draws a circle
+       function drawCircle(){
+           circle = draw.randomCircleInArea(canvas, true, true, '#999', 2);
+           physikz.addRandomVelocity(circle, canvas);
+           view.addChild(circle);
+           circles.push(circle);
        }
+ 
+       // TODO 3 / 8 : Call the drawCircle() function
+       for (var loopsCompleted = 0; loopsCompleted < 400; loopsCompleted++) {
+           drawCircle();
+       }
+      
+ 
+       ////////////////////////////////////////////////////////////
+       ///////////////// PROGRAM LOGIC ////////////////////////////
+       ////////////////////////////////////////////////////////////
+      
+       /*
+       This Function is called 60 times/second producing 60 frames/second.
+       In each frame, for every circle, it should redraw that circle
+       and check to see if it has drifted off the screen.        
+       */
+       function update() {
+           // TODO 4 : Update the circle's position //
+          
+          
+          
+           // TODO 5 / 10 : Call game.checkCirclePosition() on your circles.
+          
+          
+          
+ 
+           // TODO 9 : Iterate over the array
+           for (var i = 0; i < circles.length; i++) {
+               var circle = circles[i];
+               game.checkCirclePosition(circle)
+               physikz.updatePosition(circle)
+           }
+          
+             
+              
+      
+              
+          
+          
+          
+       }
+  
+ 
+          
+ 
+ 
+           // YOUR TODO 7 CODE ENDS HERE //////////////////////////
+       }
+      
+       /////////////////////////////////////////////////////////////
+       // --- NO CODE BELOW HERE  --- DO NOT REMOVE THIS CODE --- //
+       /////////////////////////////////////////////////////////////
+      
+       view.addChild(fps);
+       app.addUpdateable(fps);
+      
+       game.circle = circle;
+       game.circles = circles;
+       game.drawCircle = drawCircle;
+       game.update = update;
+      
+       app.addUpdateable(window.opspark.game);
+    }
+};
+ 
+// DON'T REMOVE THIS CODE //////////////////////////////////////////////////////
+if((typeof process !== 'undefined') &&
+   (typeof process.versions.node !== 'undefined')) {
+   // here, export any references you need for tests //
+   module.exports = init;
+}
 
-       .board{
-           height: 100vh;
-          
-       }
-           body {
-           background-color: aqua;
-          
- 
-       }
-   </style>
-   <!--    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
- 
-</head>
-<body class="board">
-   <!-- HTML for the box -->
-   <div class="box">?</div>
- 
-   <script>
-       (function(){
-           'use strict'
-           /* global jQuery */
- 
-           //////////////////////////////////////////////////////////////////
-           /////////////////// SETUP DO NOT DELETE //////////////////////////
-           //////////////////////////////////////////////////////////////////
-          
-           var box = jQuery('.box');   // reference to the HTML .box element
-           var board = jQuery('.board');   // reference to the HTML .board element
-           var boardWidth = board.width(); // the maximum X-Coordinate of the screen
- 
-           // Every 50 milliseconds, call the update Function (see below)
-           setInterval(update, 50);
-          
-           // Every time the box is clicked, call the handleBoxClick Function (see below)
-           box.on('click', handleBoxClick);
- 
-           // moves the Box to a new position on the screen along the X-Axis
-           function moveBoxTo(newPositionX, newPositionY) {
-               box.css("left", newPositionX);
-           }
- 
-           // changes the text displayed on the Box
-           function changeBoxText(newText) {
-               box.text(newText);
-           }
- 
-           //////////////////////////////////////////////////////////////////
-           /////////////////// YOUR CODE BELOW HERE /////////////////////////
-           //////////////////////////////////////////////////////////////////
-          
-           // TODO 2 - Variable declarations
-          
-           var positionX = 0;
-           var points = 0;
-           var speed = 10;
-           var boardHeight = jQuery(window).height();
-          
- 
- 
-          
-           /*
-           This Function will be called 20 times/second. Each time it is called,
-           it should move the Box to a new location. If the box drifts off the screen
-           turn it around!
-           */
-           function update() {
-               positionX = positionX + speed
-               moveBoxTo(positionX);
- 
-               if (positionX > boardWidth) {
-                   speed = -speed;
-                  
- 
-               }
- 
-               if (positionX < 0) {
-                   speed *= -1;
- 
-              
-              
-               }    
-                  
-              
-           }
- 
-           /*
-           This Function will be called each time the box is clicked. Each time it is called,
-           it should increase the points total, increase the speed, and move the box to
-           the left side of the screen.
-           */
-           function handleBoxClick(moveBoxTo) {
-               positionX = 0;
-               points = points + 1;
-               changeBoxText(points);
-               speed = speed + 3
- 
- 
-           };
-       })();
-   </script>
-</body>
-</html>
